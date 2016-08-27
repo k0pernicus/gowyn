@@ -1,6 +1,7 @@
 package giwyn
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -19,7 +20,19 @@ func addGiwynConfigurationFile(pathname string) {
 		return
 	}
 
-	if _, err := io.WriteString(file, UPDATED_S+time.Now().String()); err != nil {
+	if _, err := io.WriteString(file, UPDATED_S+" "+time.Now().String()+"\n"); err != nil {
+		ErrorTracer.Println(err)
+		return
+	}
+
+	/*
+		Procedure to confirm if the user wants to follow the current path project or not
+	*/
+	confirmationToFollow := STATUS_IGNORING
+	if askForConfirmation(fmt.Sprintf("Would you like to follow %s?", pathname)) {
+		confirmationToFollow = STATUS_FOLLOWING
+	}
+	if _, err := io.WriteString(file, STATUS+" "+confirmationToFollow+"\n"); err != nil {
 		ErrorTracer.Println(err)
 		return
 	}

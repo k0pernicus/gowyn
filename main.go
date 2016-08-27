@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"os/user"
@@ -21,12 +20,12 @@ func main() {
 	*/
 	userHomeDirectory, err := user.Current()
 	if err != nil {
-		fmt.Panicln("ERROR: Canno't retrieve the user home directory, due to: ", err)
+		panic(fmt.Sprintf("ERROR: Canno't retrieve the user home directory, due to %s", err))
 	}
 
 	/*
 		Get each git path - currently (demo), we don't use them...
 	*/
-	_ := giwyn.FindGitObjects(userHomeDirectory.HomeDir)
+	giwyn.FindGitObjects(userHomeDirectory.HomeDir)
 
 }
