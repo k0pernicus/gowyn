@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/k0pernicus/giwyn/giwyn"
 	"os"
 	"os/user"
+
+	"github.com/k0pernicus/giwyn/giwyn"
 )
 
 func main() {
