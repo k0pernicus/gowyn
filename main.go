@@ -28,7 +28,9 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("ERROR: Canno't retrieve the user current path, due to %s", err))
 		}
-		fmt.Println("PWD: ", pwd)
+		if err := giwyn.GetGitObject(pwd); err != nil {
+			panic(fmt.Sprintf("ERROR: Canno't get the git object from %s, due to %s", pwd, err))
+		}
 
 	case crawl.FullCommand():
 		/*
