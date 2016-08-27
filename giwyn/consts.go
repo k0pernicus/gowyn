@@ -2,5 +2,5 @@ package giwyn
 
 const (
 	GIWYN_NAME_FILE = ".giwyn"
-	UPDATED_S       = "Updaed: "
+	UPDATED_S       = "Updated: "
 )
