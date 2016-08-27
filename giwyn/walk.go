@@ -1,9 +1,33 @@
 package giwyn
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
+
+func isGitRepository(dirName *os.FileInfo) bool {
+	return ((*dirName).IsDir() && (*dirName).Name() == ".git")
+}
+
+func GetGitObject(pathname string) error {
+
+	files, err := ioutil.ReadDir(pathname)
+
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if isGitRepository(&file) {
+			addGiwynConfigurationFile(pathname, false)
+			break
+		}
+	}
+
+	return nil
+
+}
 
 /*
 	FindGitObjects is a function that find git object paths from a pathname given as parameter.
@@ -34,9 +58,8 @@ func findGitPaths(listOfGitPaths *[]string) filepath.WalkFunc {
 		}
 
 		if info.IsDir() && (info.Name() == ".git") {
-			InfoTracer.Printf("* Found %s\n", pathname)
 			*listOfGitPaths = append(*listOfGitPaths, pathname)
-			addGiwynConfigurationFile(filepath.Dir(pathname))
+			addGiwynConfigurationFile(filepath.Dir(pathname), true)
 		}
 
 		return nil
