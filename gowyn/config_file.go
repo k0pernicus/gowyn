@@ -53,3 +53,9 @@ func saveGowynConfigurationFile(pathname string) error {
 	}
 
 }
+
+func addEntryInConfigFile(filepath string) error {
+
+	return nil
+
+}
