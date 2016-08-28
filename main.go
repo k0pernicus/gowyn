@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	/*"os/user"*/
+	"os/user"
+	"path/filepath"
 
 	"github.com/k0pernicus/gowyn/gowyn"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -16,6 +17,8 @@ var (
 	crawl = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
 	/*RM*/
 	rm = app.Command("rm", "Remove the current directory to the list followed git repositories")
+	/*UPDATE*/
+	update = app.Command("update", "Update the configuration file removing useless links")
 )
 
 func main() {
@@ -25,19 +28,22 @@ func main() {
 	*/
 	gowyn.InitTraces(os.Stderr, os.Stdout, os.Stdout)
 
+	userHomeDirectory, err := user.Current()
+	if err != nil {
+		panic(fmt.Sprintf("ERROR: Canno't retrieve the user home directory, due to \"%s\"", err))
+	}
+
+	if err := gowyn.InitGowynConfigurationFile(filepath.Join(userHomeDirectory.HomeDir, gowyn.GOWYN_NAME_CONF)); err != nil {
+		panic(fmt.Sprintf("ERROR: Canno't retrieve the configuration file, due to \"%s\"", err))
+	}
+
 	pwd, err := os.Getwd()
 	if err != nil {
 		panic(fmt.Sprintf("ERROR: Canno't retrieve the user current path, due to \"%s\"", err))
 	}
 
-	/*
-		userHomeDirectory, err := user.Current()
-		if err != nil {
-			panic(fmt.Sprintf("ERROR: Canno't retrieve the user home directory, due to \"%s\"", err))
-		}
-	*/
-
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
+
 	case add.FullCommand():
 		if *crawl {
 			if err := gowyn.FindGitObjects(pwd); err != nil {
@@ -53,6 +59,15 @@ func main() {
 		if err := gowyn.RmGitObject(pwd); err != nil {
 			panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
 		}
+
+	case update.FullCommand():
+
+	}
+
+	if err := gowyn.SaveCurrentConfiguration(); err != nil {
+		panic(fmt.Sprintf("ERROR: Canno't save current configuration in configuration file, due to \"%s\"", err))
+	} else {
+		fmt.Println("Configuration file has been saved!")
 	}
 
 }

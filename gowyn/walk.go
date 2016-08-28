@@ -1,7 +1,6 @@
 package gowyn
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
 )
@@ -12,34 +11,6 @@ func isGitRepositoryExists(pathname string) bool {
 		If the directory exists, so err = nil, and err == nil!
 	*/
 	return err == nil
-}
-
-func GetGitObject(pathname string) error {
-
-	if isGitRepositoryExists(pathname) {
-		if !isGowynObjectFileExists(pathname) {
-			addGowynObjectFile(pathname, false)
-			return nil
-		} else {
-			return errors.New("Gowyn configuration file already exists.")
-		}
-	} else {
-		return errors.New("The pathname does not point to a git repository.")
-	}
-
-}
-
-func RmGitObject(pathname string) error {
-
-	if isGowynObjectFileExists(pathname) {
-		if err := os.Remove(filepath.Join(pathname, GOWYN_NAME_FILE)); err != nil {
-			return err
-		}
-		return nil
-	} else {
-		return errors.New("No gowyn configuration file in the current directory.")
-	}
-
 }
 
 /*
@@ -64,9 +35,6 @@ func findGitPaths(pathname string, info os.FileInfo, err error) error {
 
 	if info.IsDir() && (info.Name() == ".git") {
 		if err := addGowynObjectFile(filepath.Dir(pathname), true); err != nil {
-			return err
-		}
-		if err := addEntryInConfigFile(pathname); err != nil {
 			return err
 		}
 	}

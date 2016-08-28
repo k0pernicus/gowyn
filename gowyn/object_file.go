@@ -1,6 +1,7 @@
 package gowyn
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -39,6 +40,37 @@ func addGowynObjectFile(pathname string, crawlBehaviour bool) error {
 		return err
 	}
 
+	addEntryInConfigFile(pathname)
+
 	return nil
+
+}
+
+func GetGitObject(pathname string) error {
+
+	if isGitRepositoryExists(pathname) {
+		if !isGowynObjectFileExists(pathname) {
+			addGowynObjectFile(pathname, false)
+			return nil
+		} else {
+			return errors.New("Gowyn configuration file already exists.")
+		}
+	} else {
+		return errors.New("The pathname does not point to a git repository.")
+	}
+
+}
+
+func RmGitObject(pathname string) error {
+
+	if isGowynObjectFileExists(pathname) {
+		if err := os.Remove(filepath.Join(pathname, GOWYN_NAME_FILE)); err != nil {
+			return err
+		}
+		rmEntryInConfigFile(pathname)
+		return nil
+	} else {
+		return errors.New("No gowyn configuration file in the current directory.")
+	}
 
 }
