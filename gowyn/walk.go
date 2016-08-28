@@ -14,19 +14,6 @@ func isGitRepositoryExists(pathname string) bool {
 	return err == nil
 }
 
-func isGowynObjectFileExists(pathname string) bool {
-	_, err := os.Stat(filepath.Join(pathname, GOWYN_NAME_FILE))
-	/*
-		Same for isGitRepositoryExists()
-	*/
-	return err == nil
-}
-
-func isGowynConfigurationFile(pathname string) bool {
-	_, err := os.Stat(pathname)
-	return err == nil
-}
-
 func GetGitObject(pathname string) error {
 
 	if isGitRepositoryExists(pathname) {

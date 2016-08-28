@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+func isGowynObjectFileExists(pathname string) bool {
+	_, err := os.Stat(filepath.Join(pathname, GOWYN_NAME_FILE))
+	/*
+		Same for isGitRepositoryExists()
+	*/
+	return err == nil
+}
+
 /*
 	addGowynObjectFile is a function that add comments and informations about a git repository, in a GIWYN_NAME_FILE file.
 */

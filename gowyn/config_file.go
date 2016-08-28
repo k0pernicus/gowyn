@@ -9,6 +9,11 @@ import (
 
 var globalContainer gabs.Container
 
+func isGowynConfigurationFile(pathname string) bool {
+	_, err := os.Stat(pathname)
+	return err == nil
+}
+
 /*
 	parseConfigurationFile is a function that allows to parse a gowyn object file, which is a simple JSON file
 */
