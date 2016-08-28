@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/user"
 
-	"github.com/k0pernicus/giwyn/giwyn"
+	"github.com/k0pernicus/gowyn/gowyn"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -21,7 +21,7 @@ func main() {
 	/*
 		Init traces (Error, Info, Warning)
 	*/
-	giwyn.InitTraces(os.Stderr, os.Stdout, os.Stdout)
+	gowyn.InitTraces(os.Stderr, os.Stdout, os.Stdout)
 
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -30,7 +30,7 @@ func main() {
 
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
 	case add.FullCommand():
-		if err := giwyn.GetGitObject(pwd); err != nil {
+		if err := gowyn.GetGitObject(pwd); err != nil {
 			panic(fmt.Sprintf("ERROR: Canno't get the git object from %s, due to \"%s\"", pwd, err))
 		}
 
@@ -45,10 +45,10 @@ func main() {
 		/*
 			Get each git path - currently (demo), we don't use them...
 		*/
-		giwyn.FindGitObjects(userHomeDirectory.HomeDir)
+		gowyn.FindGitObjects(userHomeDirectory.HomeDir)
 
 	case rm.FullCommand():
-		if err := giwyn.RmGitObject(pwd); err != nil {
+		if err := gowyn.RmGitObject(pwd); err != nil {
 			panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
 		}
 	}

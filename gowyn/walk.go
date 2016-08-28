@@ -1,4 +1,4 @@
-package giwyn
+package gowyn
 
 import (
 	"errors"
@@ -14,22 +14,27 @@ func isGitRepositoryExists(pathname string) bool {
 	return err == nil
 }
 
-func isGiwynObjectFileExists(pathname string) bool {
-	_, err := os.Stat(filepath.Join(pathname, GIWYN_NAME_FILE))
+func isGowynObjectFileExists(pathname string) bool {
+	_, err := os.Stat(filepath.Join(pathname, GOWYN_NAME_FILE))
 	/*
 		Same for isGitRepositoryExists()
 	*/
 	return err == nil
 }
 
+func isGowynConfigurationFile(pathname string) bool {
+	_, err := os.Stat(pathname)
+	return err == nil
+}
+
 func GetGitObject(pathname string) error {
 
 	if isGitRepositoryExists(pathname) {
-		if !isGiwynObjectFileExists(pathname) {
-			addGiwynConfigurationFile(pathname, false)
+		if !isGowynObjectFileExists(pathname) {
+			addGowynObjectFile(pathname, false)
 			return nil
 		} else {
-			return errors.New("Giwyn configuration file already exists.")
+			return errors.New("Gowyn configuration file already exists.")
 		}
 	} else {
 		return errors.New("The pathname does not point to a git repository.")
@@ -39,13 +44,13 @@ func GetGitObject(pathname string) error {
 
 func RmGitObject(pathname string) error {
 
-	if isGiwynObjectFileExists(pathname) {
-		if err := os.Remove(filepath.Join(pathname, GIWYN_NAME_FILE)); err != nil {
+	if isGowynObjectFileExists(pathname) {
+		if err := os.Remove(filepath.Join(pathname, GOWYN_NAME_FILE)); err != nil {
 			return err
 		}
 		return nil
 	} else {
-		return errors.New("No giwyn configuration file in the current directory.")
+		return errors.New("No gowyn configuration file in the current directory.")
 	}
 
 }
@@ -80,7 +85,7 @@ func findGitPaths(listOfGitPaths *[]string) filepath.WalkFunc {
 
 		if info.IsDir() && (info.Name() == ".git") {
 			*listOfGitPaths = append(*listOfGitPaths, pathname)
-			addGiwynConfigurationFile(filepath.Dir(pathname), true)
+			addGowynObjectFile(filepath.Dir(pathname), true)
 		}
 
 		return nil

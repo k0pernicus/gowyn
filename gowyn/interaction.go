@@ -1,4 +1,4 @@
-package giwyn
+package gowyn
 
 import (
 	"bufio"
