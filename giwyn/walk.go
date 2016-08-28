@@ -1,31 +1,52 @@
 package giwyn
 
 import (
-	"io/ioutil"
+	"errors"
 	"os"
 	"path/filepath"
 )
 
-func isGitRepository(dirName *os.FileInfo) bool {
-	return ((*dirName).IsDir() && (*dirName).Name() == ".git")
+func isGitRepositoryExists(pathname string) bool {
+	_, err := os.Stat(filepath.Join(pathname, GIT_NAME_DIR))
+	/*
+		If the directory exists, so err = nil, and err == nil!
+	*/
+	return err == nil
+}
+
+func isGiwynObjectFileExists(pathname string) bool {
+	_, err := os.Stat(filepath.Join(pathname, GIWYN_NAME_FILE))
+	/*
+		Same for isGitRepositoryExists()
+	*/
+	return err == nil
 }
 
 func GetGitObject(pathname string) error {
 
-	files, err := ioutil.ReadDir(pathname)
-
-	if err != nil {
-		return err
-	}
-
-	for _, file := range files {
-		if isGitRepository(&file) {
+	if isGitRepositoryExists(pathname) {
+		if !isGiwynObjectFileExists(pathname) {
 			addGiwynConfigurationFile(pathname, false)
-			break
+			return nil
+		} else {
+			return errors.New("Giwyn configuration file already exists.")
 		}
+	} else {
+		return errors.New("The pathname does not point to a git repository.")
 	}
 
-	return nil
+}
+
+func RmGitObject(pathname string) error {
+
+	if isGiwynObjectFileExists(pathname) {
+		if err := os.Remove(filepath.Join(pathname, GIWYN_NAME_FILE)); err != nil {
+			return err
+		}
+		return nil
+	} else {
+		return errors.New("No giwyn configuration file in the current directory.")
+	}
 
 }
 
