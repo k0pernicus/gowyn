@@ -59,15 +59,9 @@ func RmGitObject(pathname string) error {
 	FindGitObjects is a function that find git object paths from a pathname given as parameter.
 	This function returns a slice of strings, which each string corresponds to a git path.
 */
-func FindGitObjects(pathname string) []string {
+func FindGitObjects(pathname string) error {
 
-	var listOfGitPaths []string
-
-	if err := filepath.Walk(pathname, findGitPaths(&listOfGitPaths)); err != nil {
-		ErrorTracer.Panicln(err)
-	}
-
-	return listOfGitPaths
+	return filepath.Walk(pathname, findGitPaths)
 
 }
 
@@ -75,20 +69,21 @@ func FindGitObjects(pathname string) []string {
 	Function that walk from the pathname given as parameter.
 	Each time that the function find a ".git" repository, the function add the pathfile to a data structure.
 */
-func findGitPaths(listOfGitPaths *[]string) filepath.WalkFunc {
+func findGitPaths(pathname string, info os.FileInfo, err error) error {
 
-	return func(pathname string, info os.FileInfo, err error) error {
+	if err != nil {
+		return err
+	}
 
-		if err != nil {
+	if info.IsDir() && (info.Name() == ".git") {
+		if err := addGowynObjectFile(filepath.Dir(pathname), true); err != nil {
 			return err
 		}
-
-		if info.IsDir() && (info.Name() == ".git") {
-			*listOfGitPaths = append(*listOfGitPaths, pathname)
-			addGowynObjectFile(filepath.Dir(pathname), true)
+		if err := addEntryInConfigFile(pathname); err != nil {
+			return err
 		}
-
-		return nil
 	}
+
+	return nil
 
 }
