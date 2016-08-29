@@ -15,8 +15,13 @@ var (
 	/*ADD*/
 	add   = app.Command("add", "Add the current directory to the list of git repositories")
 	crawl = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
+	/*CONFIG*/
+	config   = app.Command("config", "Add informations about the Gowyn configuration")
+	computer = config.Arg("computer", "Add a computer name to your configuration").String()
 	/*RM*/
 	rm = app.Command("rm", "Remove the current directory to the list followed git repositories")
+	/*STATUS*/
+	status = app.Command("status", "Get the status of each listed git repositories")
 	/*UPDATE*/
 	update = app.Command("update", "Update the configuration file removing useless links")
 )
@@ -55,19 +60,22 @@ func main() {
 			}
 		}
 
+	case config.FullCommand():
+		/*TODO*/
+
 	case rm.FullCommand():
 		if err := gowyn.RmGitObject(pwd); err != nil {
 			panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
 		}
 
-	case update.FullCommand():
+	case status.FullCommand():
+		gowyn.CheckStateOfGitObjects()
 
+	case update.FullCommand():
+		/*TODO*/
 	}
 
 	if err := gowyn.SaveCurrentConfiguration(); err != nil {
 		panic(fmt.Sprintf("ERROR: Canno't save current configuration in configuration file, due to \"%s\"", err))
-	} else {
-		fmt.Println("Configuration file has been saved!")
 	}
-
 }
