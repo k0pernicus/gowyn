@@ -18,6 +18,8 @@ var (
 	/*CONFIG*/
 	config   = app.Command("config", "Add informations about the Gowyn configuration")
 	computer = config.Arg("computer", "Add a computer name to your configuration").String()
+	/*LIST*/
+	list = app.Command("list", "List followed git repositories")
 	/*RM*/
 	rm = app.Command("rm", "Remove the current directory to the list followed git repositories")
 	/*STATUS*/
@@ -62,6 +64,9 @@ func main() {
 
 	case config.FullCommand():
 		/*TODO*/
+
+	case list.FullCommand():
+		gowyn.ListGitObjects()
 
 	case rm.FullCommand():
 		if err := gowyn.RmGitObject(pwd); err != nil {
