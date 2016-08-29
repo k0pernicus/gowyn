@@ -1,6 +1,7 @@
 package gowyn
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -98,6 +99,17 @@ func rmEntryInConfigFile(filepath string) {
 		ErrorTracer.Printf("Canno't delete the current entry (%s) from the list of git repositories, due to error %s\n", filepath, err)
 	} else {
 		InfoTracer.Printf("The current entry (%s) has been deleted from the list of git repositories to follow\n", filepath)
+	}
+
+}
+
+func ListGitObjects() {
+
+	if gitObjects, err := globalContainer.S(FILENAME_PATH).Children(); err == nil {
+		fmt.Printf("Total: %d repositories\n", len(gitObjects))
+		for index, gitObject := range gitObjects {
+			fmt.Printf("\t* %d: %s\n", index, gitObject)
+		}
 	}
 
 }
