@@ -5,6 +5,12 @@ import (
 	"github.com/libgit2/git2go"
 )
 
+var statusOption = git.StatusOptions{
+	git.StatusShowIndexAndWorkdir,
+	git.StatusOptIncludeUntracked,
+	[]string{},
+}
+
 func CheckStateOfGitObjects() {
 
 	gitRepositories, err := globalContainer.S(FILENAME_PATH).Children()
@@ -27,13 +33,14 @@ func checkStateOfGitObject(pathdir string) {
 		ErrorTracer.Println("Cannot' open git repository (%s), due to \"%s\"", pathdir, err)
 	}
 
-	var statusOption = git.StatusOptions{
-		git.StatusShowIndexAndWorkdir,
-		git.StatusOptIncludeUntracked,
-		[]string{},
+	fmt.Printf("* %s:\n", gitRepository.Workdir())
+
+	if index, err := gitRepository.Index(); err == nil {
+		if index.HasConflicts() {
+			fmt.Printf("\tWARNING::YOU HAVE SOME CONFLICTS!")
+		}
 	}
 
-	fmt.Printf("*%s:\n", gitRepository.Workdir())
 	if listOfUntrackedFiles, err := gitRepository.StatusList(&statusOption); err == nil {
 		if count, err := listOfUntrackedFiles.EntryCount(); err == nil {
 			fmt.Printf("\t%d untracked files!\n", count)
