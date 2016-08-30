@@ -10,22 +10,33 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
+/*
+	PROGRAM ARGUMENTS
+	-----------------
+	-> add: Add the current directory (where the user is) to the git repositories to watch!
+	--> crawl: Crawl subdirectories from where the user is, in order to add these git repositories in the list to watch
+	-----------------
+	-> config: Add informations, in the global configuration file
+	--> computer: Add computer name
+	-----------------
+	-> list: Get the list of followed git repositories
+	-----------------
+	-> rm: Remove the repository where the user is, from the list of git repositories to watch
+	-----------------
+	-> status: Get the status of the watched git repositories
+	-----------------
+	-> update: Update the list of git repositories to watch, by verifying if saved git repositories are still available
+*/
 var (
-	app = kingpin.New("GOwin", "A command-line app to follow your git repositories")
-	/*ADD*/
-	add   = app.Command("add", "Add the current directory to the list of git repositories")
-	crawl = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
-	/*CONFIG*/
+	app      = kingpin.New("GOwin", "A command-line app to follow your git repositories")
+	add      = app.Command("add", "Add the current directory to the list of git repositories")
+	crawl    = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
 	config   = app.Command("config", "Add informations about the Gowyn configuration")
 	computer = config.Arg("computer", "Add a computer name to your configuration").String()
-	/*LIST*/
-	list = app.Command("list", "List followed git repositories")
-	/*RM*/
-	rm = app.Command("rm", "Remove the current directory to the list followed git repositories")
-	/*STATUS*/
-	status = app.Command("status", "Get the status of each listed git repositories")
-	/*UPDATE*/
-	update = app.Command("update", "Update the configuration file removing useless links")
+	list     = app.Command("list", "List followed git repositories")
+	rm       = app.Command("rm", "Remove the current directory to the list followed git repositories")
+	status   = app.Command("status", "Get the status of each listed git repositories")
+	update   = app.Command("update", "Update the configuration file removing useless links")
 )
 
 func main() {
