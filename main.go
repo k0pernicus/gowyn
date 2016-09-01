@@ -25,13 +25,16 @@ import (
 	-> update: Update the list of git repositories to watch, by verifying if saved git repositories are still available
 */
 var (
-	app    = kingpin.New("GOwin", "A command-line app to follow your git repositories")
-	add    = app.Command("add", "Add the current directory to the list of git repositories")
-	crawl  = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
-	list   = app.Command("list", "List followed git repositories")
-	rm     = app.Command("rm", "Remove the current directory to the list followed git repositories")
-	status = app.Command("status", "Get the status of each listed git repositories")
-	update = app.Command("update", "Update the configuration file removing useless links")
+	app          = kingpin.New("GOwin", "A command-line app to follow your git repositories")
+	add          = app.Command("add", "Add the current directory to the list of git repositories")
+	add_crawl    = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
+	add_group    = add.Flag("group", "Add the/all git repository/ies in a group").String()
+	add_path     = add.Flag("path", "Give as parameter the path of the git repository").String()
+	list         = app.Command("list", "List followed git repositories")
+	rm           = app.Command("rm", "Remove the current directory to the list followed git repositories")
+	status       = app.Command("status", "Get the status of each listed git repositories")
+	update       = app.Command("update", "Update the configuration file removing useless links")
+	update_group = update.Flag("group", "Update the configuration file only for the specified group").String()
 )
 
 func main() {
@@ -58,12 +61,13 @@ func main() {
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
 
 	case add.FullCommand():
-		if *crawl {
-			if err := gowyn.FindGitObjects(pwd); err != nil {
-				panic(fmt.Sprintf("ERROR: Crawl to find git paths failed, due to \"%s\"", err))
-			}
+		if *add_path != "" {
+			pwd = *add_path
+		}
+		if *add_crawl {
+			gowyn.FindGitObjects(pwd, add_group)
 		} else {
-			if err := gowyn.GetGitObject(pwd); err != nil {
+			if err := gowyn.GetGitObject(pwd, add_group); err != nil {
 				panic(fmt.Sprintf("ERROR: Canno't get the git object from %s, due to \"%s\"", pwd, err))
 			}
 		}
@@ -80,7 +84,11 @@ func main() {
 		gowyn.CheckStateOfGitObjects()
 
 	case update.FullCommand():
-		gowyn.UpdateConfigFile()
+		if *update_group != "" {
+			gowyn.UpdateConfigFileByGroup(*update_group)
+		} else {
+			gowyn.UpdateConfigFile()
+		}
 	}
 
 	if err := gowyn.SaveCurrentConfiguration(); err != nil {
