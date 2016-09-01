@@ -60,7 +60,7 @@ func UpdateConfigFile() {
 		}
 	}
 
-	if notFound != 0 && askForConfirmation("Would you like to remove deleted files?") {
+	if notFound != 0 && askForConfirmation("We found some (re)moved repositories, would you like to delete those?") {
 		for _, indexOfFilepath := range indexToRemove {
 			_ = globalContainer.ArrayRemoveP(indexOfFilepath, FILENAME_PATH)
 		}
