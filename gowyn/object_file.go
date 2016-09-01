@@ -20,9 +20,12 @@ func isGowynObjectFileExists(pathname string) bool {
 /*
 	addGowynObjectFile is a function that add comments and informations about a git repository, in a GIWYN_NAME_FILE file.
 */
-func addGowynObjectFile(pathname string, crawlBehaviour bool) error {
+func addGowynObjectFile(pathname string, groupname string, crawlBehaviour bool) error {
 
 	InfoTracer.Printf(" found \"%s\"\n", pathname)
+	if groupname != "" {
+		InfoTracer.Printf("==> Belongs to group \"%s\"\n", groupname)
+	}
 
 	if crawlBehaviour && !askForConfirmation(fmt.Sprintf("Would you like to follow this repository \"%s\"?", pathname)) {
 		return nil
@@ -35,6 +38,13 @@ func addGowynObjectFile(pathname string, crawlBehaviour bool) error {
 	}
 
 	defer file.Close()
+
+	if groupname != "" {
+		if _, err := io.WriteString(file, GROUP_S+groupname+"\n"); err != nil {
+			return err
+		}
+		addGroupInConfigFile(pathname, groupname)
+	}
 
 	if _, err := io.WriteString(file, UPDATED_S+time.Now().String()+"\n"); err != nil {
 		return err
@@ -54,11 +64,11 @@ func addGowynObjectFile(pathname string, crawlBehaviour bool) error {
 
 }
 
-func GetGitObject(pathname string) error {
+func GetGitObject(pathname string, group *string) error {
 
 	if isGitRepositoryExists(pathname) {
 		if !isGowynObjectFileExists(pathname) {
-			addGowynObjectFile(pathname, false)
+			addGowynObjectFile(pathname, *group, false)
 			return nil
 		} else {
 			return errors.New("Gowyn configuration file already exists.")
