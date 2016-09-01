@@ -116,10 +116,10 @@ func parseGowynConfigurationFile() error {
 
 	container, err := gabs.ParseJSONFile(configPath)
 	if err != nil {
-
+		return err
 	}
 	if !container.ExistsP(FILENAME_PATH) {
-		InfoTracer.Println("Does not exists a basic JSON structure inside the configuration file...")
+		InfoTracer.Println("Does not exists a basic JSON structure to store filenames...")
 		if _, err := container.Array(FILENAME_PATH); err != nil {
 			return err
 		}
