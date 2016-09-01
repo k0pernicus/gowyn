@@ -30,6 +30,44 @@ func SaveCurrentConfiguration() error {
 	return saveGowynConfigurationFile()
 }
 
+func UpdateConfigFile() {
+
+	var notFound = 0
+
+	var indexToRemove []int
+
+	var gitObjects []*gabs.Container
+
+	gitObjects, err := globalContainer.S(FILENAME_PATH).Children()
+
+	if err != nil {
+		ErrorTracer.Printf("Canno't get the data structure %s from %s!\n", FILENAME_PATH, GOWYN_NAME_CONF)
+		return
+	}
+
+	for index, gitObject := range gitObjects {
+		pathValue, ok := gitObject.Data().(string)
+		if !(ok) {
+			ErrorTracer.Printf("The data structure %s in %s contains a non-string value!\n", FILENAME_PATH, GOWYN_NAME_CONF)
+			continue
+		}
+		var currentPath = pathValue + "/"
+		if _, err := os.Stat(currentPath); err != nil && os.IsNotExist(err) {
+			notFound += 1
+			indexToRemove = append(indexToRemove, index)
+			WarningTracer.Printf("%s not found...\n", currentPath)
+			rmEntryInConfigFile(currentPath)
+		}
+	}
+
+	if notFound != 0 && askForConfirmation("Would you like to remove deleted files?") {
+		for _, indexOfFilepath := range indexToRemove {
+			_ = globalContainer.ArrayRemoveP(indexOfFilepath, FILENAME_PATH)
+		}
+	}
+
+}
+
 /*
 	parseConfigurationFile is a function that allows to parse a gowyn object file, which is a simple JSON file
 */
