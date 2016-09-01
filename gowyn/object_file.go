@@ -36,7 +36,7 @@ func addGowynObjectFile(pathname string, crawlBehaviour bool) error {
 
 	defer file.Close()
 
-	if _, err := io.WriteString(file, UPDATED_S+" "+time.Now().String()+"\n"); err != nil {
+	if _, err := io.WriteString(file, UPDATED_S+time.Now().String()+"\n"); err != nil {
 		return err
 	}
 
