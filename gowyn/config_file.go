@@ -68,6 +68,47 @@ func UpdateConfigFile() {
 
 }
 
+func UpdateConfigFileByGroup(group string) {
+
+	var notFound = 0
+
+	var indexToRemove []int
+	var pathsToRemove []string
+
+	var gitObjects []*gabs.Container
+
+	gitObjects, err := globalContainer.S(GROUPS_PATH, group).Children()
+
+	if err != nil {
+		ErrorTracer.Printf("Canno't get the group %s from %s, in %s!\n", group, GROUPS_PATH, GOWYN_NAME_CONF)
+		return
+	}
+
+	for index, gitObject := range gitObjects {
+		pathValue, ok := gitObject.Data().(string)
+		if !(ok) {
+			ErrorTracer.Printf("The group %s in %s contains a non-string value!\n", group, GOWYN_NAME_CONF)
+			continue
+		}
+		var currentPath = pathValue
+		if _, err := os.Stat(currentPath); err != nil && os.IsNotExist(err) {
+			notFound += 1
+			pathsToRemove = append(pathsToRemove, currentPath)
+			indexToRemove = append(indexToRemove, index)
+			WarningTracer.Printf("%s not found...\n", currentPath)
+			rmEntryInConfigFile(currentPath)
+		}
+	}
+
+	if notFound != 0 && askForConfirmation("We found some (re)moved repositories, would you like to delete those?") {
+		for _, indexOfFilepath := range indexToRemove {
+			_ = globalContainer.ArrayRemove(indexOfFilepath, GROUPS_PATH, group)
+			_ = globalContainer.ArrayRemove(indexOf(pathsToRemove[indexOfFilepath]), FILENAME_PATH)
+		}
+	}
+
+}
+
 /*
 	parseConfigurationFile is a function that allows to parse a gowyn object file, which is a simple JSON file
 */
@@ -107,6 +148,31 @@ func addEntryInConfigFile(filepath string) {
 	} else {
 		InfoTracer.Printf("The current entry (%s) has been added in the list of git repositories to follow", filepath)
 	}
+
+}
+
+func addGroupInConfigFile(filepath string, group string) {
+
+	if !globalContainer.Exists(GROUPS_PATH, group) {
+		if _, err := globalContainer.Array(GROUPS_PATH, group); err != nil {
+			ErrorTracer.Printf("Canno't create the array %s, due to %s", GROUPS_PATH, err)
+		}
+	}
+
+	if globalContainer.Exists(GROUPS_PATH, group, filepath) {
+		WarningTracer.Printf("The entry %s exists in the group %s\n", filepath, group)
+		return
+	}
+
+	if err := globalContainer.ArrayAppend(filepath, GROUPS_PATH, group); err != nil {
+		ErrorTracer.Printf("Canno't add the current entry (%s) in the group %s, due to \"%s\"", filepath, group, err)
+	} else {
+		InfoTracer.Printf("The current entry (%s) has been added in the group %s", filepath, group)
+	}
+
+}
+
+func removeGroupInConfigFile(filepath string, group string) {
 
 }
 
