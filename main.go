@@ -16,9 +16,6 @@ import (
 	-> add: Add the current directory (where the user is) to the git repositories to watch!
 	--> crawl: Crawl subdirectories from where the user is, in order to add these git repositories in the list to watch
 	-----------------
-	-> config: Add informations, in the global configuration file
-	--> computer: Add computer name
-	-----------------
 	-> list: Get the list of followed git repositories
 	-----------------
 	-> rm: Remove the repository where the user is, from the list of git repositories to watch
@@ -83,7 +80,7 @@ func main() {
 		gowyn.CheckStateOfGitObjects()
 
 	case update.FullCommand():
-		/*TODO*/
+		gowyn.UpdateConfigFile()
 	}
 
 	if err := gowyn.SaveCurrentConfiguration(); err != nil {
