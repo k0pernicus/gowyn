@@ -28,15 +28,13 @@ import (
 	-> update: Update the list of git repositories to watch, by verifying if saved git repositories are still available
 */
 var (
-	app      = kingpin.New("GOwin", "A command-line app to follow your git repositories")
-	add      = app.Command("add", "Add the current directory to the list of git repositories")
-	crawl    = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
-	config   = app.Command("config", "Add informations about the Gowyn configuration")
-	computer = config.Arg("computer", "Add a computer name to your configuration").String()
-	list     = app.Command("list", "List followed git repositories")
-	rm       = app.Command("rm", "Remove the current directory to the list followed git repositories")
-	status   = app.Command("status", "Get the status of each listed git repositories")
-	update   = app.Command("update", "Update the configuration file removing useless links")
+	app    = kingpin.New("GOwin", "A command-line app to follow your git repositories")
+	add    = app.Command("add", "Add the current directory to the list of git repositories")
+	crawl  = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
+	list   = app.Command("list", "List followed git repositories")
+	rm     = app.Command("rm", "Remove the current directory to the list followed git repositories")
+	status = app.Command("status", "Get the status of each listed git repositories")
+	update = app.Command("update", "Update the configuration file removing useless links")
 )
 
 func main() {
@@ -72,9 +70,6 @@ func main() {
 				panic(fmt.Sprintf("ERROR: Canno't get the git object from %s, due to \"%s\"", pwd, err))
 			}
 		}
-
-	case config.FullCommand():
-		/*TODO*/
 
 	case list.FullCommand():
 		gowyn.ListGitObjects()
