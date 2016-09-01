@@ -6,8 +6,8 @@ const (
 	GOWYN_NAME_FILE = ".gowyn"
 	GOWYN_NAME_CONF = ".gowyn_conf"
 	/*.GOWYN FILE*/
-	UPDATED_S = "[UPDATE]"
-	STATUS    = "[STATUS]"
+	UPDATED_S = "UPDATED = "
 	/*.GOWYN CONF*/
 	FILENAME_PATH = "filepaths"
+	COMPUTER_NAME = "COMPUTER_NAME = "
 )
