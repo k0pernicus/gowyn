@@ -17,28 +17,30 @@ func isGitRepositoryExists(pathname string) bool {
 	FindGitObjects is a function that find git object paths from a pathname given as parameter.
 	This function returns a slice of strings, which each string corresponds to a git path.
 */
-func FindGitObjects(pathname string) error {
-
-	return filepath.Walk(pathname, findGitPaths)
-
+func FindGitObjects(pathname string, group *string) {
+	findGitPaths(group)
 }
 
 /*
 	Function that walk from the pathname given as parameter.
 	Each time that the function find a ".git" repository, the function add the pathfile to a data structure.
 */
-func findGitPaths(pathname string, info os.FileInfo, err error) error {
+func findGitPaths(group *string) filepath.WalkFunc {
 
-	if err != nil {
-		return err
-	}
+	return func(pathname string, info os.FileInfo, err error) error {
 
-	if info.IsDir() && (info.Name() == ".git") {
-		if err := addGowynObjectFile(filepath.Dir(pathname), true); err != nil {
-			return err
+		if err != nil {
+			ErrorTracer.Fatal(err)
 		}
-	}
 
-	return nil
+		if info.IsDir() && (info.Name() == ".git") {
+			if err := addGowynObjectFile(filepath.Dir(pathname), *group, true); err != nil {
+				ErrorTracer.Fatal(err)
+			}
+		}
+
+		return nil
+
+	}
 
 }
