@@ -155,7 +155,7 @@ func addGroupInConfigFile(filepath string, group string) {
 
 	if !globalContainer.Exists(GROUPS_PATH, group) {
 		if _, err := globalContainer.Array(GROUPS_PATH, group); err != nil {
-			ErrorTracer.Printf("Canno't create the array %s, due to %s", GROUPS_PATH, err)
+			ErrorTracer.Printf("Canno't create the array %s, due to %s\n", GROUPS_PATH, err)
 		}
 	}
 
@@ -165,14 +165,34 @@ func addGroupInConfigFile(filepath string, group string) {
 	}
 
 	if err := globalContainer.ArrayAppend(filepath, GROUPS_PATH, group); err != nil {
-		ErrorTracer.Printf("Canno't add the current entry (%s) in the group %s, due to \"%s\"", filepath, group, err)
+		ErrorTracer.Printf("Canno't add the current entry (%s) in the group %s, due to \"%s\"\n", filepath, group, err)
 	} else {
-		InfoTracer.Printf("The current entry (%s) has been added in the group %s", filepath, group)
+		InfoTracer.Printf("The current entry (%s) has been added in the group %s\n", filepath, group)
 	}
 
 }
 
-func removeGroupInConfigFile(filepath string, group string) {
+func RmGroupInConfigFile(group string) {
+
+	if globalContainer.Exists(GROUPS_PATH, group) {
+		/* Delete paths in the group */
+		pathsToRemove, err := globalContainer.S(GROUPS_PATH, group).Children()
+		if err != nil {
+			ErrorTracer.Fatalf("Canno't get the group %s from %s to delete it!\n", group, GROUPS_PATH)
+		}
+		for _, path := range pathsToRemove {
+			data, _ := path.Data().(string)
+			if err := globalContainer.ArrayRemove(indexOf(data), FILENAME_PATH); err != nil {
+				ErrorTracer.Printf("Canno't delete %s from %s, included in group %s!\n", data, FILENAME_PATH, group)
+			}
+		}
+		/* Delete the group */
+		if err := globalContainer.Delete(GROUPS_PATH, group); err != nil {
+			ErrorTracer.Printf("The group %s has not been deleted from %s, due to \"%s\"\n", group, GROUPS_PATH, err)
+		}
+	} else {
+		WarningTracer.Printf("The group %s does not exists and canno't be deleted\n", group)
+	}
 
 }
 
@@ -210,9 +230,16 @@ func rmEntryInConfigFile(filepath string) {
 func ListGitObjects() {
 
 	if gitObjects, err := globalContainer.S(FILENAME_PATH).Children(); err == nil {
-		fmt.Printf("Total: %d repositories\n", len(gitObjects))
+		fmt.Printf("You saved %d repositories\n", len(gitObjects))
 		for index, gitObject := range gitObjects {
 			fmt.Printf("\t* %d: %s\n", index, gitObject)
+		}
+	}
+
+	if groups, err := globalContainer.S(GROUPS_PATH).ChildrenMap(); err == nil {
+		fmt.Printf("You saved %d groups\n", len(groups))
+		for group, gitObjects := range groups {
+			fmt.Printf("\t %s => %s\n", group, gitObjects.String())
 		}
 	}
 
