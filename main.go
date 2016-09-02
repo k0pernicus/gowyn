@@ -32,6 +32,7 @@ var (
 	add_path     = add.Flag("path", "Give as parameter the path of the git repository").String()
 	list         = app.Command("list", "List followed git repositories")
 	rm           = app.Command("rm", "Remove the current directory to the list followed git repositories")
+	remove_group = rm.Flag("group", "Remove an existing group and associated repositories, from the configuration file").String()
 	status       = app.Command("status", "Get the status of each listed git repositories")
 	update       = app.Command("update", "Update the configuration file removing useless links")
 	update_group = update.Flag("group", "Update the configuration file only for the specified group").String()
@@ -76,8 +77,12 @@ func main() {
 		gowyn.ListGitObjects()
 
 	case rm.FullCommand():
-		if err := gowyn.RmGitObject(pwd); err != nil {
-			panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
+		if *remove_group != "" {
+			gowyn.RmGroupInConfigFile(*remove_group)
+		} else {
+			if err := gowyn.RmGitObject(pwd); err != nil {
+				panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
+			}
 		}
 
 	case status.FullCommand():
