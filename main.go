@@ -15,14 +15,18 @@ import (
 	-----------------
 	-> add: Add the current directory (where the user is) to the git repositories to watch!
 	--> crawl: Crawl subdirectories from where the user is, in order to add these git repositories in the list to watch
+	--> group: Tag the repository
+	--> path: Add the repository, for a given path
 	-----------------
 	-> list: Get the list of followed git repositories
 	-----------------
 	-> rm: Remove the repository where the user is, from the list of git repositories to watch
+	--> group: Remove the given group and associated repositories, from your git repositories
 	-----------------
 	-> status: Get the status of the watched git repositories
 	-----------------
 	-> update: Update the list of git repositories to watch, by verifying if saved git repositories are still available
+	--> group: Update only the given group, if exists
 */
 var (
 	app          = kingpin.New("GOwin", "A command-line app to follow your git repositories")
