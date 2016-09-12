@@ -45,9 +45,14 @@ var (
 func main() {
 
 	/*
-		Init traces (Error, Info, Warning)
+		Init traces (Debug, Error, Info, Warning)
+		If the user does not want to get debug traces, initialize the field using nil (so, don't print anything)!
 	*/
-	gowyn.InitTraces(os.Stderr, os.Stdout, os.Stdout)
+	if !*debug {
+		gowyn.InitTraces(nil, os.Stderr, os.Stdout, os.Stdout)
+	} else {
+		gowyn.InitTraces(os.Stdout, os.Stderr, os.Stdout, os.Stdout)
+	}
 
 	userHomeDirectory, err := user.Current()
 	if err != nil {
