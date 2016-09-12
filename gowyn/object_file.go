@@ -30,15 +30,11 @@ func AddGroupForAnExistingPath(pathname string, group string) {
 /*
 	addGowynObjectFile is a function that add comments and informations about a git repository, in a GIWYN_NAME_FILE file.
 */
-func addGowynObjectFile(pathname string, groupname string, crawlBehaviour bool) error {
+func addGowynObjectFile(pathname string, groupname string) error {
 
 	InfoTracer.Printf(" found \"%s\"\n", pathname)
 	if groupname != "" {
 		InfoTracer.Printf("==> Belongs to group \"%s\"\n", groupname)
-	}
-
-	if crawlBehaviour && !askForConfirmation(fmt.Sprintf("Would you like to follow this repository \"%s\"?", pathname)) {
-		return nil
 	}
 
 	file, err := os.OpenFile(filepath.Join(pathname, GOWYN_NAME_FILE), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
