@@ -10,34 +10,81 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
-/*
-	PROGRAM ARGUMENTS
-	-----------------
-	-> add: Add the current directory (where the user is) to the git repositories to watch!
-	--> crawl: Crawl subdirectories from where the user is, in order to add these git repositories in the list to watch
-	--> group: Tag the repository
-	--> path: Add the repository, for a given path
-	-----------------
-	-> list: Get the list of followed git repositories
-	-----------------
-	-> rm: Remove the repository where the user is, from the list of git repositories to watch
-	--> group: Remove the given group and associated repositories, from your git repositories
-	-----------------
-	-> status: Get the status of the watched git repositories
-	-----------------
-	-> update: Update the list of git repositories to watch, by verifying if saved git repositories are still available
-	--> group: Update only the given group, if exists
-*/
 var (
-	app          = kingpin.New("GOwin", "A command-line app to follow your git repositories")
-	add          = app.Command("add", "Add the current directory to the list of git repositories")
-	add_crawl    = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
-	add_group    = add.Flag("group", "Add the/all git repository/ies in a group").String()
-	add_path     = add.Flag("path", "Give as parameter the path of the git repository").String()
-	list         = app.Command("list", "List followed git repositories")
-	rm           = app.Command("rm", "Remove the current directory to the list followed git repositories")
-	remove_group = rm.Flag("group", "Remove an existing group and associated repositories, from the configuration file").String()
-	status       = app.Command("status", "Get the status of each listed git repositories")
+	/*
+		app
+		===
+		Field that contains commands and fields about GOwyn
+	*/
+	app = kingpin.New("GOwin", "A command-line app to follow your git repositories")
+	/*
+		add
+		===
+		Command that add a git object in the list of git objects, which is the list of objects to be inform about modifications
+		Subcommands
+		-----------
+		*	add_crawl: boolean to enable the behaviour to add all git objects contained in the current repository
+		*	add_group: string that contains the group to add the git object contained in the current repository
+		*	add_path:	string that contains the path of the git object to add in the list of git objects, and not in the current repository
+	*/
+	add       = app.Command("add", "Add the current directory to the list of git repositories")
+	add_crawl = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
+	add_group = add.Flag("group", "Add the/all git repository/ies in a group").String()
+	add_path  = add.Flag("path", "Give as parameter the path of the git repository").String()
+	/*
+		debug
+		=====
+		Simple flag to display logs in order to debug the program
+	*/
+	debug = app.Flag("debug", "Run the app with debug traces").Bool()
+	/*
+		group
+		=====
+		Manage groups for the git repository contained in the current path
+		Subcommands
+		-----------
+		* add: Add a new group to the git object
+		*	rm: Remove/delete the given group, AND ALL associated git objects
+	*/
+	group     = app.Command("group", "Add group to a followed git repository")
+	group_add = group.Flag("add", "Add group to a followed git repository").String()
+	group_rm  = group.Flag("rm", "Remove an existing group and associated repositories, from the configuration file").String()
+	/*
+		list
+		====
+		List appreciated/saved git objects
+	*/
+	list = app.Command("list", "List followed git repositories")
+	/*
+		retrieve
+		========
+		Retrieve git objects in your hard drive - really interesting if you have some repositories with created .gowyn files inside
+		Subcommands
+		-----------
+		* group: Retrieve git objects IF it belong to the given group
+	*/
+	retrieve       = app.Command("retrieve", "Retrieve a gowyn configuration, based on existing gowyn objects")
+	retrieve_group = retrieve.Flag("group", "Retrieve only gowyn objects that corresponding to the specified group").String()
+	/*
+		rm
+		==
+		Remove the git object from the list of appreciated/saved git objects
+	*/
+	rm = app.Command("rm", "Remove the current directory to the list followed git repositories")
+	/*
+		status
+		======
+		Get the status of each appreciated/saved git objects
+	*/
+	status = app.Command("status", "Get the status of each listed git repositories")
+	/*
+		update
+		======
+		Update the global configuration file (~/.gowyn_conf) - usefull to delete useless/removed git objects
+		Subcommands
+		-----------
+		* group: Update only the given group
+	*/
 	update       = app.Command("update", "Update the configuration file removing useless links")
 	update_group = update.Flag("group", "Update the configuration file only for the specified group").String()
 )
