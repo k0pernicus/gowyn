@@ -172,7 +172,7 @@ func addGroupInConfigFile(filepath string, group string) {
 
 }
 
-func RmGroupInConfigFile(group string) {
+func RmGroupInConfigFile(group string, hardRm bool) {
 
 	if globalContainer.Exists(GROUPS_PATH, group) {
 		/* Delete paths in the group */
@@ -187,8 +187,10 @@ func RmGroupInConfigFile(group string) {
 					ErrorTracer.Printf("Canno't delete %s from %s, included in group %s!\n", data, FILENAME_PATH, group)
 				}
 			*/
-			if err := RmGitObject(data); err != nil {
-				ErrorTracer.Printf("Canno't delete the gowyn configuration file from %s!\n", data)
+			if hardRm {
+				if err := RmGitObject(data, true); err != nil {
+					ErrorTracer.Printf("Canno't delete the gowyn configuration file from %s!\n", data)
+				}
 			}
 		}
 		/* Delete the group */
