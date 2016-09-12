@@ -46,9 +46,16 @@ var (
 		* add: Add a new group to the git object
 		*	rm: Remove/delete the given group, AND ALL associated git objects
 	*/
-	group     = app.Command("group", "Add group to a followed git repository")
-	group_add = group.Flag("add", "Add group to a followed git repository").String()
-	group_rm  = group.Flag("rm", "Remove an existing group and associated repositories, from the configuration file").String()
+	group        = app.Command("group", "Add group to a followed git repository")
+	group_add    = group.Flag("add", "Add group to a followed git repository").String()
+	group_ignore = group.Flag("ignore", "Ignore an existing group and associated repositories - gowyn configuration files WILL NOT BE erased!").String()
+	group_rm     = group.Flag("rm", "Remove an existing group and associated repositories - gowyn configuration files WILL BE erased!").String()
+	/*
+		ignore
+		======
+		Ignore the current path - the current path will be unlisted, but the gowyn configuration file will not be erased (which is different with the `rm` command)
+	*/
+	ignore = app.Command("ignore", "Ignore the current path")
 	/*
 		list
 		====
@@ -133,7 +140,14 @@ func main() {
 		if *group_add != "" {
 			gowyn.AddGroupForAnExistingPath(pwd, *group_add)
 		} else if *group_rm != "" {
-			gowyn.RmGroupInConfigFile(*group_rm)
+			gowyn.RmGroupInConfigFile(*group_rm, true)
+		} else if *group_ignore != "" {
+			gowyn.RmGroupInConfigFile(*group_ignore, false)
+		}
+
+	case ignore.FullCommand():
+		if err := gowyn.RmGitObject(pwd, false); err != nil {
+			panic(fmt.Sprintf("ERROR: Canno't ignore the git object from %s, due to \"%s\"", pwd, err))
 		}
 
 	case list.FullCommand():
@@ -147,7 +161,7 @@ func main() {
 		}
 
 	case rm.FullCommand():
-		if err := gowyn.RmGitObject(pwd); err != nil {
+		if err := gowyn.RmGitObject(pwd, true); err != nil {
 			panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
 		}
 
