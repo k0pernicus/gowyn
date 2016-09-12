@@ -17,6 +17,16 @@ func isGowynObjectFileExists(pathname string) bool {
 	return err == nil
 }
 
+func AddGroupForAnExistingPath(pathname string, group string) {
+
+	if isGowynObjectFileExists(pathname) {
+		addGroupInConfigFile(pathname, group)
+	} else {
+		ErrorTracer.Printf("Cannot found an existing Gowyn repository for %s, please to run \"gowyn add --group %s\" instead\n", pathname, group)
+	}
+
+}
+
 /*
 	addGowynObjectFile is a function that add comments and informations about a git repository, in a GIWYN_NAME_FILE file.
 */
