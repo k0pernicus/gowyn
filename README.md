@@ -4,20 +4,18 @@ Giwyn, in Go
 ## Tutorial
 
 1.	Install Gowyn...
-
 ```
 git clone https://github.com/k0pernicus/GOwyn
 cd GOwyn/
 go build
 go install
-```
+```  
 
 2.	Clone 2 "fake" repositories...
-
 ```
 git clone https://github.com/k0pernicus/ocaml_exercism
 git clone https://github.com/k0pernicus/fdcrawler
-```
+```  
 
 3.	Ok, now, let's go(wyn)!
 		Go in `ocaml_exercism` and save it in group `Ocaml`: `gowyn add --group=Ocaml`
