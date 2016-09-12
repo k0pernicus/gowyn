@@ -6,9 +6,10 @@ import (
 )
 
 /*
-  error is Logger object to output logs for error messages
-  info is Logger object to output logs for information messages
-  warning is Logger object to output warning messages
+	DebugTracer is a Logger object to output logs to debug the program
+  ErrorTracer is a Logger object to output logs for runtime errors
+  InfoTracer is a Logger object to output basic informations about the program
+  WarningTracer is a Logger object to output runtime warnings - warnings are informative messages that are not considered as errors
 */
 var (
 	DebugTracer   *log.Logger
