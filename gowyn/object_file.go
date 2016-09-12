@@ -70,11 +70,14 @@ func addGowynObjectFile(pathname string, groupname string) error {
 
 }
 
-func GetGitObject(pathname string, group *string) error {
+func GetGitObject(pathname string, group *string, crawlBehaviour bool) error {
 
 	if isGitRepositoryExists(pathname) {
 		if !isGowynObjectFileExists(pathname) {
-			addGowynObjectFile(pathname, *group, false)
+			if crawlBehaviour && !askForConfirmation(fmt.Sprintf("Would you like to follow this repository \"%s\"?", pathname)) {
+				return nil
+			}
+			addGowynObjectFile(pathname, *group)
 			return nil
 		} else {
 			return errors.New("Gowyn configuration file already exists.")
