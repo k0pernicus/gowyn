@@ -122,23 +122,33 @@ func main() {
 			pwd = *add_path
 		}
 		if *add_crawl {
-			gowyn.FindGitObjects(pwd, add_group)
+			gowyn.FindGitObjects(pwd, add_group, false)
 		} else {
-			if err := gowyn.GetGitObject(pwd, add_group); err != nil {
+			if err := gowyn.GetGitObject(pwd, add_group, false); err != nil {
 				panic(fmt.Sprintf("ERROR: Canno't get the git object from %s, due to \"%s\"", pwd, err))
 			}
+		}
+
+	case group.FullCommand():
+		if *group_add != "" {
+			gowyn.AddGroupForAnExistingPath(pwd, *group_add)
+		} else if *group_rm != "" {
+			gowyn.RmGroupInConfigFile(*group_rm)
 		}
 
 	case list.FullCommand():
 		gowyn.ListGitObjects()
 
-	case rm.FullCommand():
-		if *remove_group != "" {
-			gowyn.RmGroupInConfigFile(*remove_group)
+	case retrieve.FullCommand():
+		if *retrieve_group != "" {
+			gowyn.FindGitObjects(pwd, retrieve_group, true)
 		} else {
-			if err := gowyn.RmGitObject(pwd); err != nil {
-				panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
-			}
+			gowyn.FindGitObjects(pwd, nil, true)
+		}
+
+	case rm.FullCommand():
+		if err := gowyn.RmGitObject(pwd); err != nil {
+			panic(fmt.Sprintf("ERROR: Canno't remove the git object from %s, due to \"%s\"", pwd, err))
 		}
 
 	case status.FullCommand():
