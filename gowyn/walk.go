@@ -17,8 +17,12 @@ func isGitRepositoryExists(pathname string) bool {
 	FindGitObjects is a function that find git object paths from a pathname given as parameter.
 	This function returns a slice of strings, which each string corresponds to a git path.
 */
-func FindGitObjects(pathname string, group *string) {
-	findGitPaths(group)
+func FindGitObjects(pathname string, group *string, retrieve bool) {
+	if retrieve {
+		filepath.Walk(pathname, findExistingGitPaths(group))
+	} else {
+		filepath.Walk(pathname, findGitPaths(group))
+	}
 }
 
 /*
@@ -34,8 +38,32 @@ func findGitPaths(group *string) filepath.WalkFunc {
 		}
 
 		if info.IsDir() && (info.Name() == ".git") {
-			if err := addGowynObjectFile(filepath.Dir(pathname), *group, true); err != nil {
-				ErrorTracer.Fatal(err)
+			if err := GetGitObject(filepath.Dir(pathname), group, true); err != nil {
+				WarningTracer.Println(err)
+			}
+		}
+
+		return nil
+
+	}
+
+}
+
+func findExistingGitPaths(group *string) filepath.WalkFunc {
+
+	return func(pathname string, info os.FileInfo, err error) error {
+
+		if err != nil {
+			ErrorTracer.Fatal(err)
+		}
+
+		if info.IsDir() && (info.Name() == ".git") {
+			parentDir := filepath.Dir(pathname)
+			if _, err := os.Stat(filepath.Join(parentDir, GOWYN_NAME_FILE)); err == nil {
+				/*if err := addGowynObjectFile(parentDir, *group, true); err != nil {
+					ErrorTracer.Fatal(err)
+				}*/
+				InfoTracer.Printf("Found existing Gowyn object in dir %s\n", parentDir)
 			}
 		}
 
