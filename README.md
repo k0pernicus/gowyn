@@ -70,6 +70,7 @@ In order to use [git2go](https://github.com/libgit2/git2go), please to install t
 Ex: `brew install libgit2 cmake pkg-config`
 
 ### TODO List
+* Verify when adding the git object if it exists in the configuration file
 *	Add a structure as the git repository in the configuration file
 *	Remove the repo in the group when removing a repo from the config file
 *	Get the status of a group ONLY
