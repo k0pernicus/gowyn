@@ -182,8 +182,13 @@ func RmGroupInConfigFile(group string) {
 		}
 		for _, path := range pathsToRemove {
 			data, _ := path.Data().(string)
-			if err := globalContainer.ArrayRemove(indexOf(data), FILENAME_PATH); err != nil {
-				ErrorTracer.Printf("Canno't delete %s from %s, included in group %s!\n", data, FILENAME_PATH, group)
+			/*
+				if err := globalContainer.ArrayRemove(indexOf(data), FILENAME_PATH); err != nil {
+					ErrorTracer.Printf("Canno't delete %s from %s, included in group %s!\n", data, FILENAME_PATH, group)
+				}
+			*/
+			if err := RmGitObject(data); err != nil {
+				ErrorTracer.Printf("Canno't delete the gowyn configuration file from %s!\n", data)
 			}
 		}
 		/* Delete the group */
