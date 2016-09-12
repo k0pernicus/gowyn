@@ -89,13 +89,15 @@ func GetGitObject(pathname string, group *string, crawlBehaviour bool) error {
 
 }
 
-func RmGitObject(pathname string) error {
+func RmGitObject(pathname string, hardRm bool) error {
 
 	if isGowynObjectFileExists(pathname) {
-		if err := os.Remove(filepath.Join(pathname, GOWYN_NAME_FILE)); err != nil {
-			return err
-		}
 		rmEntryInConfigFile(pathname)
+		if hardRm {
+			if err := os.Remove(filepath.Join(pathname, GOWYN_NAME_FILE)); err != nil {
+				return err
+			}
+		}
 		return nil
 	} else {
 		return errors.New("No gowyn configuration file in the current directory.")
