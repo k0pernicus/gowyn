@@ -57,12 +57,13 @@ func addGowynObjectFile(pathname string, groupname string) error {
 	}
 
 	/*
-		Add GOWYN_NAME_FILE to the .gitignore file
+			Add GOWYN_NAME_FILE to the .gitignore file
+
+		if gitignoreFile, err := os.OpenFile(filepath.Join(pathname, GITIGNORE_NAME_FILE), os.O_RDWR|os.O_APPEND, 0644); err == nil {
+			defer gitignoreFile.Close()
+			gitignoreFile.WriteString(GOWYN_NAME_FILE)
+		}
 	*/
-	if gitignoreFile, err := os.OpenFile(filepath.Join(pathname, GITIGNORE_NAME_FILE), os.O_RDWR|os.O_APPEND, 0644); err == nil {
-		defer gitignoreFile.Close()
-		gitignoreFile.WriteString(GOWYN_NAME_FILE)
-	}
 
 	addEntryInConfigFile(pathname)
 
