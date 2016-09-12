@@ -66,6 +66,15 @@ You saved 1 groups
 
 *	Have fun and PLEASE, hack Gowyn!!!!!
 
+## FAQ
+
+*	What is the difference between `ignore` and `rm`?  
+	The main difference between those is that `rm` will delete your local object file (`.gowyn`), not `ignore`. This difference is really important if you want to push your local object file in the git server. 
+
+*	There is no much informations about my git object files...  
+	I know :-/  
+	Gowyn has to be improve **a lot**, and do not hesitate to push some updates if you wanna contribute to this project :-)
+
 ### macOS requirements
 In order to use [git2go](https://github.com/libgit2/git2go), please to install the following packages: `libgit2`, `cmake` and `pkg-config`.   
 Ex: `brew install libgit2 cmake pkg-config`
