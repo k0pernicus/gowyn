@@ -11,6 +11,7 @@ import (
   warning is Logger object to output warning messages
 */
 var (
+	DebugTracer   *log.Logger
 	ErrorTracer   *log.Logger
 	InfoTracer    *log.Logger
 	WarningTracer *log.Logger
@@ -19,7 +20,12 @@ var (
 /*
 InitTraces is a function that initialize Loggers
 */
-func InitTraces(errorHandle io.Writer, infoHandle io.Writer, warningHandle io.Writer) {
+func InitTraces(debugHandle io.Writer, errorHandle io.Writer, infoHandle io.Writer, warningHandle io.Writer) {
+
+	/*
+		Initialize the debug field
+	*/
+	DebugTracer = log.New(debugHandle, "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
 
 	/*
 	  Initialize the error field
