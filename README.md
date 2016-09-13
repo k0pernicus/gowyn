@@ -3,6 +3,8 @@ Giwyn, in Go
 
 ## Tutorial
 
+* Please to install [Golang](http://golang.org)
+
 *	Install Gowyn...
 ```
 git clone https://github.com/k0pernicus/GOwyn
