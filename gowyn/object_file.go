@@ -81,11 +81,20 @@ func GetGitObject(pathname string, group *string, crawlBehaviour bool) error {
 			addGowynObjectFile(pathname, *group)
 			return nil
 		} else {
-			return errors.New("Gowyn configuration file already exists.")
+			if indexOf(pathname) == -1 {
+				if *group != "" {
+					addGroupInConfigFile(pathname, *group)
+				}
+				addEntryInConfigFile(pathname)
+			} else {
+				return errors.New("Gowyn configuration file already exists.")
+			}
 		}
 	} else {
 		return errors.New("The pathname does not point to a git repository.")
 	}
+
+	return nil
 
 }
 
