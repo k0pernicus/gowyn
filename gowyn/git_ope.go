@@ -1,9 +1,28 @@
 package gowyn
 
+/*
+#include <git2.h>
+#include <git2/sys/repository.h>
+*/
+import "C"
+
 import (
 	"fmt"
 	"github.com/libgit2/git2go"
 )
+
+var stateToString = map[git.RepositoryState]string{
+	git.RepositoryStateNone:                 "None",
+	git.RepositoryStateMerge:                "Merge",
+	git.RepositoryStateRevert:               "Revert",
+	git.RepositoryStateCherrypick:           "Cherrypick",
+	git.RepositoryStateBisect:               "Bisect",
+	git.RepositoryStateRebase:               "Rebase",
+	git.RepositoryStateRebaseInteractive:    "Rebase Interactive",
+	git.RepositoryStateRebaseMerge:          "Rebase Merge",
+	git.RepositoryStateApplyMailbox:         "Apply Mailbox",
+	git.RepositoryStateApplyMailboxOrRebase: "Apply Mailbox or Rebase",
+}
 
 var statusOption = git.StatusOptions{
 	git.StatusShowIndexAndWorkdir,
@@ -51,6 +70,8 @@ func checkStateOfGitObject(pathdir string, full *bool) {
 
 	fmt.Printf("* %s:\n", gitRepository.Workdir())
 
+	fmt.Printf("\tCurrent state: %s\n", stateToString[gitRepository.State()])
+
 	if index, err := gitRepository.Index(); err == nil {
 		if index.HasConflicts() {
 			fmt.Printf("\tWARNING::YOU HAVE SOME CONFLICTS!\n")
@@ -74,9 +95,9 @@ func checkStateOfGitObject(pathdir string, full *bool) {
 			headReferenceName := headReference.Name()
 			headReferenceBranch, _ := headReference.Branch().Name()
 			headReferenceTarget := headReference.Target().String()
-			fmt.Printf("\tReference: %s\n", headReferenceName)
-			fmt.Printf("\tBranch name: %s\n", headReferenceBranch)
-			fmt.Printf("\tLast target id: %s\n", headReferenceTarget)
+			fmt.Printf("\tCurrent reference: %s\n", headReferenceName)
+			fmt.Printf("\tCurrent branch: %s\n", headReferenceBranch)
+			fmt.Printf("\tLast commit id: %s\n", headReferenceTarget)
 		}
 
 	}
