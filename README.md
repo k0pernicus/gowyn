@@ -7,8 +7,8 @@ Giwyn, in Go
 
 *	Install Gowyn...
 ```
-git clone https://github.com/k0pernicus/GOwyn
-cd GOwyn/
+git clone https://github.com/k0pernicus/gowyn
+cd gowyn/
 go build
 go install
 ```  
