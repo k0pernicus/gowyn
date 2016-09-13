@@ -11,16 +11,32 @@ var statusOption = git.StatusOptions{
 	[]string{},
 }
 
-func CheckStateOfGitObjects() {
+func CheckStateOfGitObjects(group *string) {
 
-	gitRepositories, err := globalContainer.S(FILENAME_PATH).Children()
+	if *group == "" {
 
-	if err != nil {
-		ErrorTracer.Fatalf("Canno't retrieve git repositories from %s\n", FILENAME_PATH)
-	}
+		gitRepositories, err := globalContainer.S(FILENAME_PATH).Children()
 
-	for _, child := range gitRepositories {
-		checkStateOfGitObject(child.Data().(string))
+		if err != nil {
+			ErrorTracer.Fatalf("Canno't retrieve git repositories from %s\n", FILENAME_PATH)
+		}
+
+		for _, child := range gitRepositories {
+			checkStateOfGitObject(child.Data().(string))
+		}
+
+	} else {
+
+		gitRepositories, err := globalContainer.S(GROUPS_PATH, *group).Children()
+
+		if err != nil {
+			ErrorTracer.Fatalf("Canno't retrieve the group %s from %s\n", *group, GROUPS_PATH)
+		}
+
+		for _, child := range gitRepositories {
+			checkStateOfGitObject(child.Data().(string))
+		}
+
 	}
 
 }
