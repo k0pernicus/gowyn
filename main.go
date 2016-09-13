@@ -23,9 +23,9 @@ var (
 		Command that add a git object in the list of git objects, which is the list of objects to be inform about modifications
 		Subcommands
 		-----------
-		*	add_crawl: boolean to enable the behaviour to add all git objects contained in the current repository
-		*	add_group: string that contains the group to add the git object contained in the current repository
-		*	add_path:	string that contains the path of the git object to add in the list of git objects, and not in the current repository
+		*	crawl: boolean to enable the behaviour to add all git objects contained in the current repository
+		*	group: string that contains the group to add the git object contained in the current repository
+		*	path:	string that contains the path of the git object to add in the list of git objects, and not in the current repository
 	*/
 	add       = app.Command("add", "Add the current directory to the list of git repositories")
 	add_crawl = add.Flag("crawl", "Crawl to add git repositories found since the current directory").Bool()
@@ -44,6 +44,7 @@ var (
 		Subcommands
 		-----------
 		* add: Add a new group to the git object
+		* ignore: Ignore the given group, AND ALL associated git objects
 		*	rm: Remove/delete the given group, AND ALL associated git objects
 	*/
 	group        = app.Command("group", "Add group to a followed git repository")
