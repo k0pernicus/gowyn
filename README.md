@@ -5,7 +5,7 @@ Giwyn, in Go
 
 * Please to install [Golang](http://golang.org)
 
-*	Install Gowyn...
+*	Install Gowyn in `$GOPATH/src/github.com/k0pernicus/`...
 ```
 git clone https://github.com/k0pernicus/gowyn
 cd gowyn/
