@@ -187,10 +187,8 @@ func RmGroupInConfigFile(group string, hardRm bool) {
 					ErrorTracer.Printf("Canno't delete %s from %s, included in group %s!\n", data, FILENAME_PATH, group)
 				}
 			*/
-			if hardRm {
-				if err := RmGitObject(data, true); err != nil {
-					ErrorTracer.Printf("Canno't delete the gowyn configuration file from %s!\n", data)
-				}
+			if err := RmGitObject(data, hardRm); err != nil {
+				ErrorTracer.Printf("Canno't delete the gowyn configuration file from %s!\n", data)
 			}
 		}
 		/* Delete the group */
