@@ -49,8 +49,7 @@ You saved 2 groups
 
 *	Finaly, you can add `fdcrawler` in the group Golang too using: `gowyn add --path=my/path/to/fdcrawler --group=Golang`
 
-*	Now, you can list the 3 objects using `gowyn status`, and you have 1 untrack file for each project, which is a gowyn statement to ignore it (in a .gitignore file).  
-This is a feature that will be remove in the next version of Gowyn...
+*	Now, you can list the 3 objects using `gowyn status`, or `gowyn status --full` if you want to get all informations for each saved git object.
 
 *	Imagine that you don't want to work with Golang... You can just remove the entire group `Golang` and all associated repositories using `gowyn group --ignore=Golang`, while keeping those git repositories in your hard drive and gowyn object files.  
 	If you want ALSO to delete gowyn object files for those repositories, use `--rm` instead of `--ignore`.  
