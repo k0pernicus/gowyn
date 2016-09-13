@@ -11,7 +11,7 @@ var statusOption = git.StatusOptions{
 	[]string{},
 }
 
-func CheckStateOfGitObjects(group *string) {
+func CheckStateOfGitObjects(group *string, full *bool) {
 
 	if *group == "" {
 
@@ -22,7 +22,7 @@ func CheckStateOfGitObjects(group *string) {
 		}
 
 		for _, child := range gitRepositories {
-			checkStateOfGitObject(child.Data().(string))
+			checkStateOfGitObject(child.Data().(string), full)
 		}
 
 	} else {
@@ -34,26 +34,26 @@ func CheckStateOfGitObjects(group *string) {
 		}
 
 		for _, child := range gitRepositories {
-			checkStateOfGitObject(child.Data().(string))
+			checkStateOfGitObject(child.Data().(string), full)
 		}
 
 	}
 
 }
 
-func checkStateOfGitObject(pathdir string) {
+func checkStateOfGitObject(pathdir string, full *bool) {
 
 	gitRepository, err := git.OpenRepository(pathdir)
 
 	if err != nil {
-		ErrorTracer.Println("Cannot' open git repository (%s), due to \"%s\"", pathdir, err)
+		ErrorTracer.Printf("Cannot' open git repository (%s), due to \"%s\"\n", pathdir, err)
 	}
 
 	fmt.Printf("* %s:\n", gitRepository.Workdir())
 
 	if index, err := gitRepository.Index(); err == nil {
 		if index.HasConflicts() {
-			fmt.Printf("\tWARNING::YOU HAVE SOME CONFLICTS!")
+			fmt.Printf("\tWARNING::YOU HAVE SOME CONFLICTS!\n")
 		}
 	}
 
@@ -63,6 +63,22 @@ func checkStateOfGitObject(pathdir string) {
 		}
 	} else {
 		fmt.Printf("\tNo untracked files!\n")
+	}
+
+	if *full {
+
+		headReference, err := gitRepository.Head()
+		if err != nil {
+			ErrorTracer.Printf("Canno't get the head of the repository %s, due to \"%s\"", pathdir, err)
+		} else {
+			headReferenceName := headReference.Name()
+			headReferenceBranch, _ := headReference.Branch().Name()
+			headReferenceTarget := headReference.Target().String()
+			fmt.Printf("\tReference: %s\n", headReferenceName)
+			fmt.Printf("\tBranch name: %s\n", headReferenceBranch)
+			fmt.Printf("\tLast target id: %s\n", headReferenceTarget)
+		}
+
 	}
 
 }

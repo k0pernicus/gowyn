@@ -85,9 +85,11 @@ var (
 		Get the status of each appreciated/saved git objects
 		Subcommands
 		-----------
+		* full : Get full informations for each git object
 		* group: Get the status of a given group ONLY
 	*/
 	status       = app.Command("status", "Get the status of each listed git repositories")
+	status_full  = status.Flag("full", "Get full informations").Bool()
 	status_group = status.Flag("group", "Get the status of the given group ONLY").String()
 	/*
 		update
@@ -171,7 +173,7 @@ func main() {
 		}
 
 	case status.FullCommand():
-		gowyn.CheckStateOfGitObjects(status_group)
+		gowyn.CheckStateOfGitObjects(status_group, status_full)
 
 	case update.FullCommand():
 		if *update_group != "" {
