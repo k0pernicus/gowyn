@@ -82,6 +82,9 @@ var (
 		status
 		======
 		Get the status of each appreciated/saved git objects
+		Subcommands
+		-----------
+		* group: Get the status of a given group ONLY
 	*/
 	status       = app.Command("status", "Get the status of each listed git repositories")
 	status_group = status.Flag("group", "Get the status of the given group ONLY").String()
