@@ -14,8 +14,11 @@ Ex: `brew install libgit2 cmake pkg-config`
 
 *	Install Gowyn in `$GOPATH/src/github.com/k0pernicus/`...
 ```
+mkdir -p $GOPATH/src/github.com/k0pernicus/
+cd $GOPATH/src/github.com/k0pernicus/
 git clone https://github.com/k0pernicus/gowyn
 cd gowyn/
+go get
 go build
 go install
 ```  
