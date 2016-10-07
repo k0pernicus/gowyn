@@ -1,14 +1,24 @@
 # GOwyn
 Giwyn, in Go
 
+## Requirements
+
+### Mac OS
+
+In order to use [git2go](https://github.com/libgit2/git2go), please to install the following packages: `libgit2`, `cmake` and `pkg-config`.   
+Ex: `brew install libgit2 cmake pkg-config`
+
 ## Tutorial
 
 * Please to install [Golang](http://golang.org)
 
 *	Install Gowyn in `$GOPATH/src/github.com/k0pernicus/`...
 ```
+mkdir -p $GOPATH/src/github.com/k0pernicus/
+cd $GOPATH/src/github.com/k0pernicus/
 git clone https://github.com/k0pernicus/gowyn
 cd gowyn/
+go get
 go build
 go install
 ```  
@@ -75,10 +85,6 @@ You saved 1 groups
 *	There is no much informations about my git object files...  
 	I know :-/  
 	Gowyn has to be improve **a lot**, and do not hesitate to push some updates if you wanna contribute to this project :-)
-
-### macOS requirements
-In order to use [git2go](https://github.com/libgit2/git2go), please to install the following packages: `libgit2`, `cmake` and `pkg-config`.   
-Ex: `brew install libgit2 cmake pkg-config`
 
 ### TODO List
 *	Add `retrieve` command
